@@ -1,37 +1,50 @@
-﻿using Rent_A_Car.Data;
-using Rent_A_Car.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
+using Rent_A_Car.Data;
+using Rent_A_Car.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rent_A_Car.Controllers
 {
+    /// <summary>
+    /// Controller for managing user-related actions.
+    /// </summary>
     public class UsersController : Controller
     {
         private readonly RentACarDbContext _context;
         private readonly UserManager<User> _userManager;
 
-        public UsersController(RentACarDbContext context,UserManager<User> userManager)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UsersController"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        /// <param name="userManager">The user manager.</param>
+        public UsersController(RentACarDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        // GET: Users
+        /// <summary>
+        /// Displays the list of users.
+        /// </summary>
+        /// <returns>The index view.</returns>
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
         }
 
-
-        // GET: UserController/Details/5
+        /// <summary>
+        /// Displays details of a specific user.
+        /// </summary>
+        /// <param name="id">The ID of the user.</param>
+        /// <returns>The details view.</returns>
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(string id)
         {
@@ -40,8 +53,7 @@ namespace Rent_A_Car.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
@@ -49,7 +61,12 @@ namespace Rent_A_Car.Controllers
 
             return View(user);
         }
-        // GET: UserController/Edit/5
+
+        /// <summary>
+        /// Displays the form for editing a user.
+        /// </summary>
+        /// <param name="id">The ID of the user to edit.</param>
+        /// <returns>The edit view.</returns>
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string? id)
         {
@@ -68,10 +85,16 @@ namespace Rent_A_Car.Controllers
             return View(model);
         }
 
-        // POST: UserController/Edit/5
+        /// <summary>
+        /// Handles the post request for editing a user.
+        /// </summary>
+        /// <param name="id">The ID of the user to edit.</param>
+        /// <param name="password">The new password.</param>
+        /// <param name="user">The user object with updated properties.</param>
+        /// <returns>The index view.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id,string password, [Bind("Id,EGN,PasswordHash,Email,UserName")] User user)
+        public async Task<IActionResult> Edit(string id, string password, [Bind("Id,EGN,PasswordHash,Email,UserName")] User user)
         {
             if (id != user.Id)
             {
@@ -80,8 +103,6 @@ namespace Rent_A_Car.Controllers
 
             if (ModelState.IsValid)
             {
-                
-                
                 try
                 {
                     User user2 = await _context.Users.FindAsync(id);
@@ -111,7 +132,11 @@ namespace Rent_A_Car.Controllers
             return View(user);
         }
 
-        // GET: UserController/Delete/5
+        /// <summary>
+        /// Displays the confirmation page for deleting a user.
+        /// </summary>
+        /// <param name="id">The ID of the user to delete.</param>
+        /// <returns>The delete view.</returns>
         public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
@@ -119,17 +144,20 @@ namespace Rent_A_Car.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
             }
-            
+
             return View(user);
         }
 
-        // POST: UserController/Delete/5
+        /// <summary>
+        /// Deletes the user from the database.
+        /// </summary>
+        /// <param name="id">The ID of the user to delete.</param>
+        /// <returns>The index view.</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -139,13 +167,25 @@ namespace Rent_A_Car.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         private bool UserExists(string id)
         {
             return _context.Users.Any(e => e.Id == id);
         }
+
+        /// <summary>
+        /// ViewModel for editing user information.
+        /// </summary>
         public class EditViewModel
         {
+            /// <summary>
+            /// Gets or sets the user.
+            /// </summary>
             public User User { get; set; }
+
+            /// <summary>
+            /// Gets or sets the password.
+            /// </summary>
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
