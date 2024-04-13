@@ -1,29 +1,38 @@
-﻿@model Rent_A_Car.Models.CarReservation
-
+﻿@model Rent_A_Car.Controllers.UsersController.EditViewModel
 @{
     ViewData["Title"] = "Edit";
+   
 }
 
 <h1>Edit</h1>
 
-<h4>CarReservation</h4>
+<h4>User</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CarID" />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="User.Id" />
             <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
+                <label asp-for="User.EGN" class="control-label"></label>
+                <input asp-for="User.EGN" class="form-control" />
+                <span asp-validation-for="User.EGN" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
+                <label asp-for="User.Email" class="control-label"></label>
+                <input asp-for="User.Email" class="form-control" />
+                <span asp-validation-for="User.Email" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="VisibleUserID" />
+            <div class="form-group">
+                <label asp-for="User.UserName" class="control-label"></label>
+                <input asp-for="User.UserName" class="form-control" />
+                <span asp-validation-for="User.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Password</label>
+                <input asp-for="Password" name="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
